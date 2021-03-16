@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using ReversiRestApi.Model;
 
 namespace ReversiRestApi.Controllers
 {
@@ -15,14 +15,27 @@ namespace ReversiRestApi.Controllers
     [Route("[controller]")]
     public class SpelController : ControllerBase
     {
-        private readonly ILogger<SpelController> _logger;
 
-        public SpelController(ILogger<SpelController> logger)
+        private readonly ISpelRepository iRepository;
+
+        public SpelController(ISpelRepository repository)
         {
-            _logger = logger;
+            iRepository = repository;
         }
 
-        // Misschien moet dit anders worden opgelost. Static is nodig ivm elke keer nieuwe instantie.
+        // GET api/spel
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> GetSpelOmschrijvingenVanSpellenMetWachtendeSpeler()
+        {
+            return iRepository.GetSpellen()
+                .Where(i => i.Speler2Token == null)
+                .Select(i => i.Omschrijving)
+                .ToArray();
+        }
+
+        #region OUD
+
+        /* Misschien moet dit anders worden opgelost. Static is nodig ivm elke keer nieuwe instantie. */
 
         static private Dictionary<string, Spel> spellen = new Dictionary<string, Spel>();
 
@@ -36,7 +49,7 @@ namespace ReversiRestApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Speler([FromBody] Speler speler)
         {
-            
+
 
 
             return Ok();
@@ -131,6 +144,8 @@ namespace ReversiRestApi.Controllers
                 return NotFound();
             }
         }
+
+        #endregion
 
     }
 }

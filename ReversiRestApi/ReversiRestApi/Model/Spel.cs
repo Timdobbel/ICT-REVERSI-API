@@ -16,7 +16,7 @@ namespace ReversiRestApi
         public string Speler2Token { get; set; }
 
         public Kleur[,] Bord { get; set; }
-        
+
         public Kleur AandeBeurt { get; set; }
 
         public Spel()
@@ -100,8 +100,8 @@ namespace ReversiRestApi
                 {
                     switch (Bord[rij, kolom])
                     {
-                        case Kleur.Geen : geen++; break;
-                        case Kleur.Wit  : wit++; break;
+                        case Kleur.Geen: geen++; break;
+                        case Kleur.Wit: wit++; break;
                         case Kleur.Zwart: zwart++; break;
                         default: break;
                     }
@@ -179,7 +179,7 @@ namespace ReversiRestApi
                 AandeBeurt = KleurToggle(AandeBeurt);
 
             }
-                
+
             return zetMogelijk;
         }
 
@@ -202,7 +202,7 @@ namespace ReversiRestApi
             // Controleer richting op nog steeds op het bord en tegengestelde kleur.
             int rijAankomst = rijVertrek + rijVector;
             int kolomAankomst = kolomVertrek + kolomVector;
-            while ( opBord(rijAankomst, kolomAankomst) && 
+            while (opBord(rijAankomst, kolomAankomst) &&
                     Bord[rijAankomst, kolomAankomst] == KleurToggle(color))
             {
                 rijAankomst += rijVector;

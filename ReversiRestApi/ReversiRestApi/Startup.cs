@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ReversiRestApi.Model;
 
 namespace ReversiRestApi
 {
@@ -25,6 +26,8 @@ namespace ReversiRestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ISpelRepository, SpelRepository>();
+
             services.AddControllers();
         }
 
