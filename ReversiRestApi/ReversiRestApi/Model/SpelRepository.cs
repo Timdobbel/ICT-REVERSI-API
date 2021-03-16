@@ -16,14 +16,14 @@ namespace ReversiRestApi.Model
             Spel spel2 = new Spel();
             Spel spel3 = new Spel();
 
-            spel1.Speler1Token = "abcdef";
+            spel1.Speler1Token = "A";
             spel1.Omschrijving = "Potje snel reveri, dus niet lang nadenken";
 
-            spel2.Speler1Token = "ghijkl";
+            spel2.Speler1Token = "B";
             spel2.Speler2Token = "mnopqr";
             spel2.Omschrijving = "Ik zoek een gevorderde tegenspeler!";
 
-            spel3.Speler1Token = "stuvwx";
+            spel3.Speler1Token = "C";
             spel3.Omschrijving = "Na dit spel wil ik er nog een paar spelen tegen zelfde tegenstander";
 
             Spellen = new List<Spel> { spel1, spel2, spel3 };
@@ -31,7 +31,7 @@ namespace ReversiRestApi.Model
 
         public void AddSpel(Spel spel)
         {
-            throw new NotImplementedException();
+            Spellen.Add(spel);
         }
 
         public List<Spel> GetSpellen()
@@ -41,7 +41,7 @@ namespace ReversiRestApi.Model
 
         public Spel GetSpel(string spelToken)
         {
-            throw new NotImplementedException();
+            return Spellen.First(i => i.Token == spelToken);
         }
     }
 }
