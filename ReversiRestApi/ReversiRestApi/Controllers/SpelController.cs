@@ -34,13 +34,85 @@ namespace ReversiRestApi.Controllers
                 .ToArray();
         }
 
+        // GET api/spel/{token}
+        [HttpGet]
+        [Route("{Token}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Spel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Spel()
+        {
+            Spel spel = iRepository.GetSpel(RouteData.Values["Token"].ToString());
+            if (spel != null)
+            {
+                return Ok(JsonConvert.SerializeObject(spel));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET api/apiSpeler/{token}
+
+        // GET api/spel/beurt/{token}
+        [HttpGet]
+        [Route("Beurt/{Token}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Spel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Beurt()
+        {
+            Spel spel = iRepository.GetSpel(RouteData.Values["Token"].ToString());
+            if (spel != null)
+            {
+                return Ok(JsonConvert.SerializeObject(spel.AandeBeurt));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // PUT api/spel/zet
+
+        [HttpPut]
+        [Route("Zet")]
+        public IActionResult Zet([FromBody] Zet zet)
+        {
+            Debug.WriteLine($"<<zet, Kolom: {zet.kolomZet} Rij: {zet.rijZet}>>");
+            Spel spel = iRepository.GetSpel(zet.Token);
+
+            if (spel != null)
+            {
+
+                if (zet.Pas)
+                {
+                    spel.Pas();
+                    return Ok("Passed");
+                }
+                else
+                {
+                    bool zetMogelijk = spel.DoeZet(zet.rijZet, zet.kolomZet);
+                    return Ok(zetMogelijk);
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // PUT api/spel/opgeven
+        [HttpPut]
+        [Route("Opgeven")]
+        public IActionResult Opgeven([FromBody] Opgeven opgeven)
+        {
+            return null;
+        }
 
 
 
         [HttpPost]
         [Route("MaakNieuwSpel")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<string> MaakNieuwSpel([FromBody] NieuwSpel nieuwSpel)
         {
             Debug.Write("MaakNieuwSpel:" + nieuwSpel.Omschrijving + "," + nieuwSpel.SpelerToken);
@@ -56,120 +128,5 @@ namespace ReversiRestApi.Controllers
 
             return spel.Token;
         }
-
-        #region OUD
-
-        ///* Misschien moet dit anders worden opgelost. Static is nodig ivm elke keer nieuwe instantie. */
-
-        //static private Dictionary<string, Spel> spellen = new Dictionary<string, Spel>();
-
-        //static private Dictionary<string, Speler> spelers = new Dictionary<string, Speler>();
-
-        //// Set en Get moet nog goed worden gezet. Misschien een POST....
-
-        //[HttpPut]
-        //[Route("Speler/{Kleur}")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Speler([FromBody] Speler speler)
-        //{
-
-
-
-        //    return Ok();
-        //}
-
-
-
-
-
-        //[HttpGet]
-        //[Route("{Token}")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Spel))]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Spel()
-        //{
-        //    Spel spel = null;
-
-        //    if (RouteData.Values.ContainsKey("Token"))
-        //    {
-        //        String spelToken = RouteData.Values["Token"].ToString();
-
-        //        if (spellen.ContainsKey(spelToken))
-        //        {
-        //            spel = spellen[spelToken];
-        //        }
-        //        else
-        //        {
-        //            spel = new Spel();
-        //            spel.ID = spellen.Count;        // Waar moet het ID mee gevuld worden. Is nu een teller.
-        //            spel.Token = spelToken;         // SpelToken moet worden gegenereerd bij makan van een nieuw spel.
-
-        //            spel.AandeBeurt = Kleur.Wit;
-
-        //            spellen.Add(spelToken, spel);
-        //        }
-
-        //        return Ok(JsonConvert.SerializeObject(spel));
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("Beurt/{Token}")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Beurt()
-        //{
-        //    Spel spel = null;
-
-        //    if (RouteData.Values.ContainsKey("Token"))
-        //    {
-        //        String spelToken = RouteData.Values["Token"].ToString();
-
-        //        if (spellen.ContainsKey(spelToken))
-        //        {
-        //            spel = spellen[spelToken];
-
-        //            return Ok(spel.AandeBeurt);
-        //        }
-        //        else
-        //        {
-        //            return NotFound();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-
-        //[HttpPut]
-        //[Route("Zet/{Kleur}")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Zet([FromBody] Zet zet)
-        //{
-        //    Spel spel = null;
-
-        //    if (spellen.ContainsKey(zet.Token))
-        //    {
-        //        spel = spellen[zet.Token];
-
-        //        bool zetMogelijk = spel.DoeZet(zet.rijZet, zet.kolomZet);
-
-        //        return Ok(zetMogelijk);
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-
-        #endregion
-
     }
 }
