@@ -109,8 +109,6 @@ namespace ReversiRestApi.Controllers
             return null;
         }
 
-
-
         [HttpPost]
         [Route("MaakNieuwSpel")]
         public ActionResult<string> MaakNieuwSpel([FromBody] NieuwSpel nieuwSpel)
